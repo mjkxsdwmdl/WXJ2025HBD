@@ -1,0 +1,180 @@
+/* --- 基础重置 --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #000; overflow: hidden; height: 100vh; font-family: -apple-system, sans-serif; }
+
+/* --- 舞台控制 --- */
+.stage { position: fixed; inset: 0; opacity: 0; pointer-events: none; transition: 1.5s; z-index: 1; }
+.stage-active { opacity: 1; pointer-events: auto; z-index: 5; }
+
+/* --- 蛋糕布局 (DIV五层结构) --- */
+.cake-wrapper { 
+    position: absolute; bottom: 15%; left: 50%; 
+    transform: translateX(-50%); 
+    display: flex; flex-direction: column; align-items: center; 
+}
+
+.cake-visual { position: relative; width: 260px; display: flex; flex-direction: column; align-items: center; }
+
+/* 蛋糕层通用样式：严丝合缝紧贴 */
+.cake-layers { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.layer { 
+    margin: 0; 
+    position: relative; opacity: 0; 
+    transform: translateY(30px); 
+    transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+.layer.animate { opacity: 1; transform: translateY(0); }
+
+/* 五层颜色：明亮浅绿色系 */
+.layer-1 { width: 250px; height: 45px; background: #66BB6A; z-index: 3; }
+.layer-2 { width: 210px; height: 45px; background: #81C784; z-index: 4; }
+.layer-3 { width: 170px; height: 45px; background: #A5D6A7; z-index: 5; }
+.layer-4 { width: 130px; height: 45px; background: #C8E6C9; z-index: 6; }
+.layer-5 { width: 90px; height: 50px; background: #E8F5E9; z-index: 7; }
+
+/* 蛋糕底部的细矩形盘子 */
+.cake-plate { width: 280px; height: 8px; background: #d0d0d0; border-radius: 4px; margin-top: -4px; z-index: 2; }
+
+/* 底层绕圈蝴蝶结装饰 */
+.ribbon-bows { 
+    position: absolute; bottom: 5px; width: 100%; 
+    text-align: center; font-size: 16px; white-space: nowrap; 
+}
+
+/* 最上层波浪奶油与彩色波点 */
+.cream-wave { 
+    position: absolute; top: 0; width: 100%; height: 25px; background: white; 
+    clip-path: polygon(0% 0%, 100% 0%, 100% 70%, 85% 100%, 70% 70%, 55% 100%, 40% 70%, 25% 100%, 10% 70%, 0% 100%);
+}
+.dots {
+    width: 100%; height: 100%;
+    background-image: radial-gradient(#FF80AB 15%, transparent 15%), radial-gradient(#40C4FF 15%, transparent 15%);
+    background-size: 10px 10px; background-position: 0 0, 5px 5px; opacity: 0.4;
+}
+
+/* --- 蜡烛与提示语 --- */
+.candle-box { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); opacity: 0; transition: 1s; }
+.candle { width: 8px; height: 35px; background: #fff; border-radius: 3px; position: relative; }
+.flame { 
+    width: 12px; height: 20px; background: #FFA000; border-radius: 50% 50% 20% 20%; 
+    position: absolute; top: -20px; left: -2px; cursor: pointer; animation: flicker 0.1s infinite alternate; 
+}
+@keyframes flicker { from { transform: scale(1); } to { transform: scale(1.1); } }
+.flame.blown-out { display: none; }
+
+.candle-hint { 
+    margin-bottom: 160px; 
+    color: #fff; font-weight: bold; font-size: 16px; 
+    text-shadow: 0 0 10px #66BB6A; animation: float 2s infinite ease-in-out; 
+}
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* --- iOS iMessage 风格信件 --- */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; }
+.overlay.active { display: flex; }
+
+.imessage-container { width: 90%; max-width: 400px; background: #fff; border-radius: 30px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+.imessage-header { padding: 15px; border-bottom: 0.5px solid #e5e5e5; text-align: center; }
+.contact-avatar { width: 45px; height: 45px; background: #8e8e93; border-radius: 50%; color: #fff; line-height: 45px; margin: 0 auto 5px; font-size: 20px; display: flex; align-items: center; justify-content: center;}
+.contact-name { font-size: 12px; color: #000; }
+
+.imessage-content { padding: 20px; display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; }
+.bubble { padding: 10px 16px; border-radius: 20px; font-size: 15px; line-height: 1.4; max-width: 85%; }
+.recipient { background: #e9e9eb; color: #000; align-self: flex-start; border-bottom-left-radius: 4px; }
+.sender { background: #007AFF; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.signature { font-size: 11px; color: #8e8e93; align-self: center; margin-top: 10px; background: transparent; }
+.imessage-footer { padding: 15px; color: #007AFF; text-align: center; font-size: 15px; cursor: pointer; border-top: 0.5px solid #e5e5e5; }
+
+/* --- 平面绿色礼盒样式 --- */
+.flat-gift-box { 
+    position: relative; 
+    width: 150px; 
+    height: 150px; 
+    cursor: pointer; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+}
+
+/* 绿色盒身 - 纯矩形 */
+.gift-box { 
+    width: 120px; 
+    height: 120px; 
+    background: #81C784; 
+    position: relative; 
+    transition: 0.5s; 
+    border: 2px solid #66BB6A;
+}
+
+/* 绿色盒盖 - 放在盒子顶部的矩形 */
+.gift-lid { 
+    width: 140px; 
+    height: 30px; 
+    background: #66BB6A; 
+    position: absolute; 
+    top: -30px; 
+    left: -10px; 
+    border-radius: 4px; 
+    z-index: 5;
+    border: 2px solid #4CAF50;
+}
+
+/* 红色竖向丝带 */
+.gift-ribbon-vertical { 
+    width: 25px; 
+    height: 100%; 
+    background: #F44336; 
+    position: absolute; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    z-index: 3;
+}
+
+/* 红色横向丝带 */
+.gift-ribbon-horizontal { 
+    width: 100%; 
+    height: 25px; 
+    background: #D32F2F; 
+    position: absolute; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    z-index: 3;
+}
+
+/* 弹出卡片样式 */
+.gift-popup-card {
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) scale(0);
+    background: white; 
+    padding: 20px 40px; 
+    border-radius: 12px;
+    white-space: nowrap; 
+    font-size: 18px; 
+    font-weight: bold; 
+    color: #333;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+    transition: 0.5s; 
+    z-index: 10;
+}
+
+/* 礼物盒打开状态动画 */
+.flat-gift-box.open .gift-box { 
+    transform: translateY(100px) scale(0.8); 
+    opacity: 0; 
+}
+.flat-gift-box.open .gift-popup-card { 
+    transform: translate(-50%, -50%) scale(1); 
+}
+
+/* --- 右上角图标 --- */
+.icon-container { position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 15px; }
+.side-icon { 
+    width: 45px; height: 45px; background: #fff; border-radius: 10px; 
+    display: flex; justify-content: center; align-items: center; 
+    transform: scale(0); transition: 0.5s; cursor: pointer; font-size: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.side-icon.active { transform: scale(1); }
